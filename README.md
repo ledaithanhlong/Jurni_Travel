@@ -1,48 +1,78 @@
-#  Website đặt và quản lý tour du lịch **Jurni**
+# Jurni - Website đặt và quản lý tour du lịch
 
-##  Giới thiệu
-Đây là **Đồ án chuyên ngành Công nghệ phần mềm** của nhóm **"Nước Dừa Code"**.  
-Mục tiêu: Xây dựng một website giúp người dùng **đặt tour du lịch** và **quản lý thông tin tour** một cách tiện lợi.  
+## Giới thiệu
 
-Website được xây dựng theo mô hình **MVC** với 3 phần chính:  
-- **Frontend**  
-- **Backend**  
-- **Database**
+Đây là **Đồ án chuyên ngành Công nghệ phần mềm** của nhóm **"Nước Dừa Code"**.
 
-###  Tính năng chính
-- Tìm kiếm và đặt tour du lịch  
-- Quản lý giỏ hàng, thanh toán trực tuyến  
-- Xem và đánh giá tour đã tham gia  
-- Quản lý tài khoản cá nhân  
-- Thanh toán VNPay/MoMo  
-- Bảo mật và phân quyền  
+Mục tiêu: Xây dựng một website giúp người dùng **đặt tour du lịch** và **quản lý thông tin tour** một cách tiện lợi.
+
+Website được xây dựng theo kiến trúc **Client-Server** với frontend React và backend Node.js.
 
 ---
 
-##  Công nghệ sử dụng
-- **Ngôn ngữ & Framework**: Node.js, Express  
-- **CSDL**: MySQL / MongoDB  
-- **Frontend**: HTML, CSS, JavaScript (+ EJS/Handlebars Template Engine)  
-- **Framework UI**: Bootstrap, Vue/React  
-- **Pattern**: MVC (Model - View - Controller)  
+## Tính năng chính
+
+- Tìm kiếm và đặt tour du lịch
+- Quản lý giỏ hàng, thanh toán trực tuyến (VNPay/MoMo)
+- Xem và đánh giá tour đã tham gia
+- Quản lý tài khoản cá nhân
+- Chat real-time với hỗ trợ viên
+- Bảo mật và phân quyền với Clerk
+- Admin dashboard
 
 ---
 
-##  Các chức năng chính
-- **Front-End**: Giao diện người dùng, responsive, form đặt tour, giỏ hàng.  
-- **Back-End**: Xử lý logic đặt tour, viết API, kết nối cơ sở dữ liệu.  
-- **Database**: Thiết kế và quản lý dữ liệu (ERD, lược đồ quan hệ).  
+## Tech Stack
+
+### Frontend
+React 18.3+ | Vite | React Router | TailwindCSS | Clerk | Socket.io | Axios
+
+### Backend
+Node.js | Express | Sequelize | MySQL 8.0+ | Clerk | Socket.io | Cloudinary
 
 ---
 
-##  Thành viên nhóm
-| STT | Họ và tên | MSSV | Vai trò | Nhiệm vụ |
-|-----|-----------|------|---------|----------|
-| 1 | Nguyễn Khắc Minh | 2280067474 | Chuyên Backend (Front-End + Database phụ) | - Thiết kế API<br>- Thiết kế cơ sở dữ liệu<br>- Tích hợp thanh toán VNPay/MoMo |
-| 2 | Lê Đại Thanh Long | 2280061752 | Chuyên Front-End (Backend phụ) | - Thiết kế giao diện website (HTML, CSS, JS, Bootstrap, Vue/React)<br>- Form đặt tour, giỏ hàng, responsive |
-| 3 | Nguyễn Huy Sơn | 2280062756 | Chuyên Database & Tester (Backend phụ) | - Thiết kế lược đồ CSDL (ERD, khóa chính/phụ)<br>- Kiểm thử chức năng đặt tour, thanh toán |
+## Quick Start
+
+```bash
+# Backend
+cd backend
+npm install
+npm run dev          # http://localhost:5000
+
+# Frontend
+cd frontend
+npm install
+npm run dev          # http://localhost:5173
+```
+
+Chi tiết setup: Xem [DATABASE_SETUP.md](./DATABASE_SETUP.md)
 
 ---
 
-##  GitHub Repo
- [DACN_Jurni](https://github.com/ledaithanhlong/DACN_Jurni)
+## Thành viên nhóm
+
+| STT | Họ và tên | MSSV | Vai trò |
+|-----|-----------|------|---------|
+| 1 | Nguyễn Khắc Minh Hiếu | 2280607474 | Backend Lead |
+| 2 | Lê Đại Thanh Long | 2280601752 | Frontend Lead |
+| 3 | Nguyễn Huy Sơn | 2280602756 | Database & QA |
+
+---
+
+## Documentation
+
+- [RULE.md](./RULE.md) - Development standards
+- [DATABASE_SETUP.md](./DATABASE_SETUP.md) - Database setup guide
+- [TUNNELTO_SETUP.md](./TUNNELTO_SETUP.md) - Tunneling guide
+
+---
+
+## GitHub Repository
+
+[Jurni](https://github.com/ledaithanhlong/Jurni_Travel)
+
+---
+
+**License**: Educational project - HUTECH University
+
