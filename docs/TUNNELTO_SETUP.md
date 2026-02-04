@@ -41,13 +41,13 @@ cargo install tunnelto
 
 **Terminal 1 - Start Backend Server:**
 ```bash
-cd e:\HUTECH\4th\Jurni\DACN_Jurni\backend
+cd backend
 npm run dev
 ```
 
 **Terminal 2 - Start Backend Tunnel:**
 ```bash
-cd e:\HUTECH\4th\Jurni\DACN_Jurni\backend
+cd backend
 npm run tunnel:backend
 ```
 
@@ -63,13 +63,13 @@ npm run tunnel:backend:custom jurni-api
 
 **Terminal 1 - Start Frontend Server:**
 ```bash
-cd e:\HUTECH\4th\Jurni\DACN_Jurni\frontend
+cd frontend
 npm run dev
 ```
 
 **Terminal 2 - Start Frontend Tunnel:**
 ```bash
-cd e:\HUTECH\4th\Jurni\DACN_Jurni\frontend
+cd frontend
 npm run tunnel:frontend
 ```
 
@@ -150,7 +150,7 @@ cd frontend && npm run tunnel:frontend:custom jurni-app
 # VITE_API_URL=https://jurni-api.tunnelto.dev/api
 ```
 
-## 🔧 Advanced Options
+## Advanced Options
 
 ### Introspection Dashboard
 
@@ -175,7 +175,7 @@ tunnelto --port 5000 --scheme https
 tunnelto --port 5000 --host 192.168.1.100
 ```
 
-## ⚠️ Important Notes
+## Important Notes
 
 ### CORS Configuration
 
@@ -200,7 +200,7 @@ Backend đã được configure để accept tunnel URLs. CORS sẽ automaticall
 - **Connection** có thể drop, cần restart tunnel
 - **URLs** không persistent (sẽ thay đổi mỗi lần restart)
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "tunnelto: command not found"
 
