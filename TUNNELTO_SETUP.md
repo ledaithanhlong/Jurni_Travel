@@ -1,8 +1,8 @@
-# 🚇 Tunnelto Setup Guide - Jurni Project
+# Tunnelto Setup Guide - Jurni Project
 
 Hướng dẫn sử dụng **tunnelto** để expose local development servers ra internet.
 
-## 📦 Cài đặt Tunnelto
+## Cài đặt Tunnelto
 
 ### Option 1: Download Binary (Recommended cho Windows)
 
@@ -35,7 +35,7 @@ Hướng dẫn sử dụng **tunnelto** để expose local development servers r
 cargo install tunnelto
 ```
 
-## 🚀 Cách Sử Dụng
+## Cách Sử Dụng
 
 ### 1. Start Backend Tunnel
 
@@ -94,7 +94,7 @@ FRONTEND_TUNNEL_URL=https://your-frontend-subdomain.tunnelto.dev
 VITE_API_URL=https://your-backend-subdomain.tunnelto.dev/api
 ```
 
-## 💡 Use Cases
+## Use Cases
 
 ### 1. Testing Payment Webhooks
 
@@ -241,13 +241,13 @@ tunnelto --port 5000 --subdomain jurni-api-2
 tunnelto --port 5000
 ```
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **Official Docs**: https://github.com/agrinman/tunnelto
 - **Releases**: https://github.com/agrinman/tunnelto/releases
 - **Issues**: https://github.com/agrinman/tunnelto/issues
 
-## 🎯 Quick Reference
+## Quick Reference
 
 | Command | Description |
 |---------|-------------|
@@ -260,4 +260,4 @@ tunnelto --port 5000
 
 ---
 
-**Happy Tunneling! 🚀**
+**Happy Tunneling! **
