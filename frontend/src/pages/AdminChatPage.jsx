@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Socket connects to base server URL (without /api path)
+const SOCKET_URL = API_URL.replace(/\/api$/, '');
 
 export default function AdminChatPage() {
     const [conversations, setConversations] = useState([]);
@@ -13,10 +15,31 @@ export default function AdminChatPage() {
 
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null);
+    // Use ref to avoid stale closure in socket handlers
+    const activeConversationIdRef = useRef(null);
+    const typingTimeoutRef = useRef(null);
 
-    // Initialize socket connection
+    // Keep ref in sync with state
     useEffect(() => {
-        socketRef.current = io(`${API_URL}/chat`, {
+        activeConversationIdRef.current = activeConversationId;
+    }, [activeConversationId]);
+
+    // Fetch conversations (defined early so socket handler can call it)
+    const fetchConversations = useCallback(async () => {
+        try {
+            const response = await fetch(`${API_URL}/chat/conversations`);
+            const data = await response.json();
+            if (data.success) {
+                setConversations(data.conversations);
+            }
+        } catch (error) {
+            console.error('Error fetching conversations:', error);
+        }
+    }, []);
+
+    // Initialize socket connection ONCE (no activeConversationId dependency!)
+    useEffect(() => {
+        socketRef.current = io(`${SOCKET_URL}/chat`, {
             transports: ['websocket', 'polling'],
         });
 
@@ -25,43 +48,58 @@ export default function AdminChatPage() {
         });
 
         socketRef.current.on('new-message', (message) => {
-            // Update messages if it's for active conversation
-            if (message.conversation_id === activeConversationId) {
+            // Use ref to avoid stale closure
+            if (message.conversation_id === activeConversationIdRef.current) {
                 setMessages(prev => [...prev, message]);
             }
-
             // Refresh conversations to update last message
             fetchConversations();
         });
 
         socketRef.current.on('user-typing', ({ isTyping: typing }) => {
+            // Only show typing for the active conversation
             setIsTyping(typing);
+            // Auto-reset typing after 3 seconds to avoid stuck state
+            if (typing) {
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
+            } else {
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+            }
+        });
+
+        // Handle conversation closed by customer
+        socketRef.current.on('conversation-closed', ({ conversationId }) => {
+            if (conversationId === activeConversationIdRef.current) {
+                setActiveConversationId(null);
+                setMessages([]);
+            }
+            fetchConversations();
+        });
+
+        // Handle agent joined notification
+        socketRef.current.on('agent-joined', ({ agentName }) => {
+            setMessages(prev => [...prev, {
+                id: `system-${Date.now()}`,
+                sender_type: 'agent',
+                sender_name: 'System',
+                message: `${agentName} đã tham gia cuộc hội thoại.`,
+                timestamp: new Date(),
+            }]);
         });
 
         return () => {
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
             if (socketRef.current) {
                 socketRef.current.disconnect();
             }
         };
-    }, [activeConversationId]);
-
-    // Fetch conversations
-    const fetchConversations = async () => {
-        try {
-            const response = await fetch(`${API_URL}/api/chat/conversations`);
-            const data = await response.json();
-            if (data.success) {
-                setConversations(data.conversations);
-            }
-        } catch (error) {
-            console.error('Error fetching conversations:', error);
-        }
-    };
+    }, [fetchConversations]);
 
     // Fetch statistics
     const fetchStatistics = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/chat/conversations/statistics`);
+            const response = await fetch(`${API_URL}/chat/conversations/statistics`);
             const data = await response.json();
             if (data.success) {
                 setStatistics(data.statistics);
@@ -74,7 +112,7 @@ export default function AdminChatPage() {
     // Fetch messages for a conversation
     const fetchMessages = async (conversationId) => {
         try {
-            const response = await fetch(`${API_URL}/api/chat/conversations/${conversationId}/messages`);
+            const response = await fetch(`${API_URL}/chat/conversations/${conversationId}/messages`);
             const data = await response.json();
             if (data.success) {
                 setMessages(data.messages);
@@ -141,7 +179,7 @@ export default function AdminChatPage() {
     // Close conversation
     const closeConversation = async (conversationId) => {
         try {
-            await fetch(`${API_URL}/api/chat/conversations/${conversationId}/close`, {
+            await fetch(`${API_URL}/chat/conversations/${conversationId}/close`, {
                 method: 'PUT',
             });
 

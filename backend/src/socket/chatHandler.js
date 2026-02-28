@@ -54,6 +54,13 @@ export function setupChatSocket(io) {
                     const conversation = await db.ChatConversation.findByPk(conversationId);
 
                     if (conversation && conversation.conversation_type === 'ai') {
+                        // Send typing indicator to show AI is processing
+                        chatNamespace.to(`conversation-${conversationId}`).emit('user-typing', {
+                            conversationId,
+                            senderName: 'Jurni AI Assistant',
+                            isTyping: true,
+                        });
+
                         // Get conversation history for context
                         const history = await db.ChatMessage.findAll({
                             where: { conversation_id: conversationId },
@@ -73,8 +80,13 @@ export function setupChatSocket(io) {
                             timestamp: new Date(),
                         });
 
-                        // Broadcast AI response
+                        // Stop typing indicator then broadcast AI response
                         setTimeout(() => {
+                            chatNamespace.to(`conversation-${conversationId}`).emit('user-typing', {
+                                conversationId,
+                                senderName: 'Jurni AI Assistant',
+                                isTyping: false,
+                            });
                             chatNamespace.to(`conversation-${conversationId}`).emit('new-message', {
                                 id: aiMessage.id,
                                 conversation_id: conversationId,
@@ -83,7 +95,7 @@ export function setupChatSocket(io) {
                                 message: aiResponse,
                                 timestamp: aiMessage.timestamp,
                             });
-                        }, 1000); // Small delay to simulate typing
+                        }, 500);
                     }
                 }
             } catch (error) {

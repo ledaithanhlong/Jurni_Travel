@@ -3,6 +3,8 @@ import { io } from 'socket.io-client';
 import { useUser } from '@clerk/clerk-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Socket connects to base server URL (without /api path)
+const SOCKET_URL = API_URL.replace(/\/api$/, '');
 
 export default function ChatWidget() {
   const { user } = useUser();
@@ -25,7 +27,7 @@ export default function ChatWidget() {
 
   // Initialize socket connection
   useEffect(() => {
-    const socketUrl = API_URL + '/chat';
+    const socketUrl = SOCKET_URL + '/chat';
     console.log('Initializing socket connection to:', socketUrl);
 
     socketRef.current = io(socketUrl, {
@@ -70,6 +72,28 @@ export default function ChatWidget() {
       setIsTyping(typing);
     });
 
+    // Handle conversation closed by admin
+    socketRef.current.on('conversation-closed', () => {
+      setMessages(prev => [...prev, {
+        id: `system-${Date.now()}`,
+        sender_type: 'agent',
+        sender_name: 'Jurni Support',
+        message: 'Cuộc hội thoại đã được đóng. Cảm ơn bạn đã liên hệ với Jurni!',
+        timestamp: new Date(),
+      }]);
+    });
+
+    // Handle agent joined
+    socketRef.current.on('agent-joined', ({ agentName }) => {
+      setMessages(prev => [...prev, {
+        id: `system-${Date.now()}`,
+        sender_type: 'agent',
+        sender_name: 'Jurni Support',
+        message: `${agentName} đã tham gia và sẵn sàng hỗ trợ bạn!`,
+        timestamp: new Date(),
+      }]);
+    });
+
     return () => {
       if (socketRef.current) {
         console.log('🔌 Disconnecting socket...');
@@ -94,7 +118,7 @@ export default function ChatWidget() {
         throw new Error('Chưa kết nối đến server. Vui lòng thử lại.');
       }
 
-      const response = await fetch(`${API_URL}/api/chat/conversations`, {
+      const response = await fetch(`${API_URL}/chat/conversations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
