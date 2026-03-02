@@ -27,7 +27,7 @@ export async function generateAIResponse(userMessage, conversationHistory = []) 
             return 'Xin lỗi, dịch vụ AI chat tạm thời không khả dụng. Vui lòng chọn chat với nhân viên để được hỗ trợ.';
         }
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
         // Build conversation context
         const context = conversationHistory

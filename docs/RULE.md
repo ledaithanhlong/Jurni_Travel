@@ -61,36 +61,50 @@ project-root/
 
 ## 2. DESIGN SYSTEM
 
-### 2.1 Color Palette
+### 2.1 Color Palette — Quy tắc 60/30/10
+
+> **60% Dominant** → màu nền/background (trắng & xanh nhạt)
+> **30% Secondary** → màu xanh blue chính (text, border, icon, nav)
+> **10% Accent** → màu cam (CTA, badge, highlight)
 
 ```css
-/* Primary Colors */
---primary-dark: #0D47A1;
---primary-medium: #1976D2;
---primary-light: #42A5F5;
+/* ───────────────────────────────────────────
+   60% — DOMINANT: Nền trang, card, sections
+   Dùng cho: background page, card bg, section bg
+─────────────────────────────────────────── */
+--color-bg-primary:   #FFFFFF;   /* Nền chính - trắng */
+--color-bg-soft:      #F0F7FF;   /* Nền section nhạt */
+--color-bg-muted:     #E3F2FD;   /* Nền card, hover nhạt */
+--color-bg-subtle:    #F5FAFF;   /* Nền xen kẽ */
 
-/* Accent Colors */
---accent-primary: #FF6B35;
---accent-secondary: #FF9800;
---accent-light: #FFE8E0;
+/* ───────────────────────────────────────────
+   30% — SECONDARY: Màu chủ đạo thương hiệu
+   Dùng cho: text heading, nav, border, icon, button outline
+─────────────────────────────────────────── */
+--color-primary-dark:   #0D47A1; /* Heading, active nav */
+--color-primary:        #1976D2; /* Button, link, icon */
+--color-primary-light:  #42A5F5; /* Border highlight, tag */
+--color-text-primary:   #212121; /* Body text */
+--color-text-secondary: #757575; /* Sub-text, caption */
+--color-text-disabled:  #BDBDBD; /* Disabled state */
+--color-border-light:   #BBDEFB; /* Card border */
+--color-border-medium:  #90CAF9; /* Input border */
 
-/* Background */
---bg-white: #FFFFFF;
---bg-blue-1: #F0F7FF;
---bg-blue-2: #E3F2FD;
---bg-blue-3: #E8F4FD;
---bg-blue-4: #F5FAFF;
-
-/* Text */
---text-primary: #212121;
---text-secondary: #757575;
---text-disabled: #BDBDBD;
-
-/* Border */
---border-light: #BBDEFB;
---border-medium: #90CAF9;
---border-dark: #64B5F6;
+/* ───────────────────────────────────────────
+   10% — ACCENT: Điểm nhấn hành động
+   Dùng cho: CTA button, badge, price, notification dot
+─────────────────────────────────────────── */
+--color-accent:         #FF6B35; /* Primary CTA - cam đậm */
+--color-accent-hover:   #E85520; /* Hover CTA */
+--color-accent-soft:    #FF9800; /* Badge, warning */
+--color-accent-light:   #FFE8E0; /* Accent bg nhạt */
 ```
+
+**Nguyên tắc áp dụng:**
+- PHẢI dùng màu Dominant (60%) cho `background`, `section`, `card`
+- PHẢI dùng màu Secondary (30%) cho `heading`, `nav`, `border`, `icon`
+- PHẢI dùng màu Accent (10%) CHỈ cho `button CTA`, `price`, `badge`, `tab active`
+- KHÔNG ĐƯỢC dùng màu Accent cho background lớn hoặc text thông thường
 
 ### 2.2 Typography
 
@@ -525,12 +539,17 @@ PHẢI include: Description, Tech Stack, Installation, Project Structure, Script
 
 ## 13. QUICK REFERENCE
 
-### Colors
-- Primary Blue: #0D47A1
-- Primary Orange: #FF6B35
-- Background: #FFFFFF, #F0F7FF
-- Text: #212121
-- Border: #BBDEFB
+### Colors — Quy tắc 60/30/10
+
+| Vai trò | Tỉ lệ | Màu | Hex | Dùng cho |
+|---------|-------|-----|-----|----------|
+| Dominant | 60% | Background trắng | `#FFFFFF` | Nền trang, card |
+| Dominant | 60% | Background xanh nhạt | `#F0F7FF` | Section, nền xen kẽ |
+| Secondary | 30% | Blue chính | `#1976D2` | Button, link, icon |
+| Secondary | 30% | Blue đậm | `#0D47A1` | Heading, nav active |
+| Secondary | 30% | Text chính | `#212121` | Body text |
+| Accent | 10% | Cam CTA | `#FF6B35` | Button CTA, price |
+| Accent | 10% | Cam nhạt | `#FFE8E0` | Accent background |
 
 ### Standards
 - Border Radius: 8px (rounded-lg)

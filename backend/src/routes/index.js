@@ -17,6 +17,7 @@ import galleryRouter from './gallery.routes.js';
 import testimonialsRouter from './testimonials.routes.js';
 import adminRouter from './admin.routes.js';
 import chatRouter from './chat.routes.js';
+import supportRouter from './support.routes.js';
 
 const router = Router();
 
@@ -38,6 +39,7 @@ router.use('/gallery', galleryRouter);
 router.use('/testimonials', testimonialsRouter);
 router.use('/admin', adminRouter);
 router.use('/chat', chatRouter);
+router.use('/support-requests', supportRouter);
 
 export default router;
 

@@ -27,12 +27,154 @@ import {
   Activity,
   MessageSquare,
   UsersRound,
-  Bell
+  Bell,
+  Headphones,
+  CheckCircle,
+  Clock
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+function AdminSupportRequests() {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [updatingId, setUpdatingId] = useState(null);
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  async function fetchRequests() {
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/support-requests`);
+      const data = await res.json();
+      if (data.success) setRequests(data.requests);
+    } catch (err) {
+      console.error('Error fetching support requests:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function markResolved(id) {
+    setUpdatingId(id);
+    try {
+      const res = await fetch(`${API_URL}/support-requests/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'resolved' } : r));
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  const filtered = filter === 'all' ? requests : requests.filter(r => r.status === filter);
+  const pendingCount = requests.filter(r => r.status === 'pending').length;
+
+  if (loading) return (
+    <div className="space-y-4">
+      {[1, 2, 3].map(i => <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />)}
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Summary */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="rounded-xl bg-blue-50 border border-blue-100 p-4 text-center">
+          <p className="text-3xl font-bold text-blue-700">{requests.length}</p>
+          <p className="text-sm text-blue-600 mt-1">Tổng yêu cầu</p>
+        </div>
+        <div className="rounded-xl bg-orange-50 border border-orange-100 p-4 text-center">
+          <p className="text-3xl font-bold text-orange-600">{pendingCount}</p>
+          <p className="text-sm text-orange-600 mt-1">Chờ xử lý</p>
+        </div>
+        <div className="rounded-xl bg-green-50 border border-green-100 p-4 text-center">
+          <p className="text-3xl font-bold text-green-600">{requests.length - pendingCount}</p>
+          <p className="text-sm text-green-600 mt-1">Đã xử lý</p>
+        </div>
+      </div>
+
+      {/* Filter */}
+      <div className="flex gap-2">
+        {[['all', 'Tất cả'], ['pending', 'Chờ xử lý'], ['resolved', 'Đã xử lý']].map(([val, label]) => (
+          <button
+            key={val}
+            onClick={() => setFilter(val)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === val
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">
+          <Headphones className="w-12 h-12 mx-auto mb-3 opacity-30" />
+          <p>Không có yêu cầu nào</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map(req => (
+            <div
+              key={req.id}
+              className={`rounded-xl border p-5 flex items-start justify-between gap-4 transition ${req.status === 'pending'
+                ? 'border-orange-200 bg-orange-50/50'
+                : 'border-green-200 bg-green-50/30'
+                }`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {req.status === 'pending'
+                    ? <Clock className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                    : <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  }
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${req.status === 'pending'
+                    ? 'bg-orange-100 text-orange-700'
+                    : 'bg-green-100 text-green-700'
+                    }`}>
+                    {req.status === 'pending' ? 'Chờ xử lý' : 'Đã xử lý'}
+                  </span>
+                  <span className="text-xs text-gray-400 ml-auto">
+                    {new Date(req.createdAt || req.created_at).toLocaleString('vi-VN')}
+                  </span>
+                </div>
+                <p className="font-semibold text-gray-900">{req.name}</p>
+                <p className="text-sm text-gray-500">{req.email}</p>
+                <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">{req.content}</p>
+              </div>
+              {req.status === 'pending' && (
+                <button
+                  onClick={() => markResolved(req.id)}
+                  disabled={updatingId === req.id}
+                  className="flex-shrink-0 rounded-lg bg-green-600 px-4 py-2 text-xs font-semibold text-white hover:bg-green-700 transition disabled:opacity-50"
+                >
+                  {updatingId === req.id ? '...' : 'Đã xử lý'}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
+
   const { getToken } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -56,6 +198,7 @@ export default function AdminDashboard() {
     { id: 'activities', label: 'Hoạt động', icon: Compass },
     { id: 'vouchers', label: 'Voucher', icon: Ticket },
     { id: 'notifications', label: 'Gửi thông báo', icon: Bell },
+    { id: 'support-requests', label: 'Yêu Cầu Hỗ Trợ', icon: Headphones },
     { id: 'chat', label: 'Quản lý Chat', icon: MessageSquare, isExternal: true },
     { id: 'team', label: 'Quản lý Team', icon: UsersRound, isExternal: true, path: '/team' },
   ];
@@ -336,6 +479,7 @@ export default function AdminDashboard() {
               {activeTab === 'activities' && <AdminActivities />}
               {activeTab === 'vouchers' && <AdminVouchers />}
               {activeTab === 'notifications' && <NotificationSender />}
+              {activeTab === 'support-requests' && <AdminSupportRequests />}
             </div>
           )}
         </div>
