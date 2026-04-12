@@ -306,14 +306,14 @@ export default function AdminDashboard() {
           })}
         </nav>
 
-        {/* Footer */}
+        {/* Footer
         {sidebarOpen && (
           <div className="p-4 border-t border-white/20 bg-black/10">
             <p className="text-xs text-white/60 text-center">
               © 2024 Jurni Travel Platform
             </p>
           </div>
-        )}
+        )} */}
       </aside>
 
       {/* Main Content - Full height from top */}

@@ -42,7 +42,7 @@ export const getPaymentConfig = async (req, res, next) => {
       paymentMethods,
       bankAccount: {
         name: 'CÔNG TY TNHH DU LỊCH JURNI',
-        bank: 'Vietcombank - CN Tân Định',
+        bank: 'Vietcombank - CN Bến Thành',
         accountNumber: '0451 2345 6789',
       },
       notes: 'Phí giao dịch có thể thay đổi tùy theo ngân hàng phát hành.',
